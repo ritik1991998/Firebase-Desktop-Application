@@ -47,7 +47,7 @@ namespace Firebase_Desktop_Application
                 text = "update"
             };
 
-            FirebaseResponse response = await _client.UpdateAsync("test/-LAXwhU7mV1oCiscwZiG", todo);
+            FirebaseResponse response = await _client.UpdateAsync("test", todo);
             ChatMessage todo1 = response.ResultAs<ChatMessage>(); //The response will contain the data written
             MessageBox.Show(todo1.name);
         }
@@ -68,5 +68,12 @@ namespace Firebase_Desktop_Application
 
         }
 
+        private async void delete_Click(object sender, EventArgs e)
+        {
+            //working delete task to delete given node
+            FirebaseResponse response = await _client.DeleteAsync("test"); //Deletes test collection
+            Console.WriteLine(response.StatusCode);
+            MessageBox.Show(response.StatusCode+"");
+        }
     }
 }
