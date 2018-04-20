@@ -32,6 +32,7 @@
             this.update = new System.Windows.Forms.Button();
             this.outcomePush = new System.Windows.Forms.TextBox();
             this.delete = new System.Windows.Forms.Button();
+            this.nodeListener = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // push
@@ -71,11 +72,22 @@
             this.delete.UseVisualStyleBackColor = true;
             this.delete.Click += new System.EventHandler(this.delete_Click);
             // 
+            // nodeListener
+            // 
+            this.nodeListener.Location = new System.Drawing.Point(527, 81);
+            this.nodeListener.Name = "nodeListener";
+            this.nodeListener.Size = new System.Drawing.Size(75, 23);
+            this.nodeListener.TabIndex = 4;
+            this.nodeListener.Text = "listener";
+            this.nodeListener.UseVisualStyleBackColor = true;
+            this.nodeListener.Click += new System.EventHandler(this.nodeListener_Click);
+            // 
             // FirebaseUi
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.nodeListener);
             this.Controls.Add(this.delete);
             this.Controls.Add(this.outcomePush);
             this.Controls.Add(this.update);
@@ -93,6 +105,7 @@
         private System.Windows.Forms.Button update;
         private System.Windows.Forms.TextBox outcomePush;
         private System.Windows.Forms.Button delete;
+        private System.Windows.Forms.Button nodeListener;
     }
 }
 

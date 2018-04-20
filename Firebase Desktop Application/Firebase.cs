@@ -15,8 +15,17 @@ using Firebase_Desktop_Application;
 
 namespace Firebase_Desktop_Application
 {
+
     public partial class FirebaseUi : Form
     {
+        IFirebaseConfig config1 = new FirebaseConfig
+        {
+            AuthSecret = Secrets.FirebaseSecret,
+            BasePath = Secrets.BasePath
+
+        };
+        IFirebaseClient client;
+
         public FirebaseUi()
         {
             InitializeComponent();
@@ -31,7 +40,7 @@ namespace Firebase_Desktop_Application
                 name = "Execute PUSH",
                 text = "kk"
             };
-            PushResponse response = await _client.PushAsync("test", todo);
+            PushResponse response = await _client.PushAsync("input", todo);
             var asd = response.Result.name;
 
             //  MessageBox.Show(asd);
@@ -73,7 +82,37 @@ namespace Firebase_Desktop_Application
             //working delete task to delete given node
             FirebaseResponse response = await _client.DeleteAsync("test"); //Deletes test collection
             Console.WriteLine(response.StatusCode);
-            MessageBox.Show(response.StatusCode+"");
+            MessageBox.Show(response.StatusCode + "");
         }
+
+        private async void nodeListener_Click(object sender, EventArgs e)
+        {
+                MessageBox.Show("ready");
+            //attach listener in different thread to input object
+            EventStreamResponse response = await _client.OnAsync("input", (sender1, args,context) =>
+            {
+                MessageBox.Show("data: "+args.Data);
+                string paths = args.Path;
+                string key = RemoveNameSubstring(paths);
+                string uniqueKey = key.Split('/').Last();
+                 MessageBox.Show("path: "+args.Path);
+                 MessageBox.Show("key: "+key);
+                 MessageBox.Show("uniquekey: "+uniqueKey);
+
+            });
+            MessageBox.Show("done");
+
+
+        }
+
+        public string RemoveNameSubstring(string name)
+        {
+            int index = name.IndexOf("/Name");
+            string uniqueKey = (index < 0) ? name : name.Remove(index, "/Name".Length);
+            return uniqueKey;
+
+
+        }
+
     }
 }
