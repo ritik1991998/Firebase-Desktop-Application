@@ -25,7 +25,7 @@ namespace Firebase_Desktop_Application
 
         private async void push_Click(object sender, EventArgs e)
         {
-            //working push
+            //working push gives child as chatmessage object
             ChatMessage todo = new ChatMessage
             {
                 name = "Execute PUSH",
@@ -34,15 +34,22 @@ namespace Firebase_Desktop_Application
             PushResponse response = await _client.PushAsync("test", todo);
             var asd = response.Result.name;
 
-            MessageBox.Show(asd);
+            //  MessageBox.Show(asd);
+            outcomePush.Text = asd;
         }
 
         private async void update_Click(object sender, EventArgs e)
         {
-            FirebaseResponse response = await _client.GetAsync("test");
-            ChatMessage user = response.ResultAs<ChatMessage>();
+            //working update updates current node with chatmessage object
+            ChatMessage todo = new ChatMessage
+            {
+                name = "Execute UPDATE!",
+                text = "update"
+            };
 
-            MessageBox.Show(user.text);
+            FirebaseResponse response = await _client.UpdateAsync("test/-LAXwhU7mV1oCiscwZiG", todo);
+            ChatMessage todo1 = response.ResultAs<ChatMessage>(); //The response will contain the data written
+            MessageBox.Show(todo1.name);
         }
 
         private static FirebaseClient _client;
