@@ -61,6 +61,7 @@
             this.outcomePush.Name = "outcomePush";
             this.outcomePush.Size = new System.Drawing.Size(477, 22);
             this.outcomePush.TabIndex = 2;
+            this.outcomePush.TextChanged += new System.EventHandler(this.outcomePush_TextChanged);
             // 
             // delete
             // 

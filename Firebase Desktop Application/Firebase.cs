@@ -12,19 +12,23 @@ using FireSharp.Interfaces;
 using FireSharp.Config;
 using FireSharp.Response;
 using Firebase_Desktop_Application;
+using System.Windows;
+using FireSharp.EventStreaming;
+using System.Threading;
 
 namespace Firebase_Desktop_Application
 {
 
     public partial class FirebaseUi : Form
     {
+        public delegate void delegateUpdateUiBox(String text);
         IFirebaseConfig config1 = new FirebaseConfig
         {
+
             AuthSecret = Secrets.FirebaseSecret,
             BasePath = Secrets.BasePath
 
         };
-        IFirebaseClient client;
 
         public FirebaseUi()
         {
@@ -87,26 +91,35 @@ namespace Firebase_Desktop_Application
 
         private async void nodeListener_Click(object sender, EventArgs e)
         {
-                MessageBox.Show("ready");
+            //MessageBox.Show("ready");
             //attach listener in different thread to input object
-            EventStreamResponse response = await _client.OnAsync("input", (sender1, args,context) =>
+            EventStreamResponse response = await _client.OnAsync("input", (sender1, args, context) =>
             {
-                MessageBox.Show("data: "+args.Data);
-                string paths = args.Path;
-                string key = RemoveNameSubstring(paths);
-                string uniqueKey = key.Split('/').Last();
-                 MessageBox.Show("path: "+args.Path);
-                 MessageBox.Show("key: "+key);
-                 MessageBox.Show("uniquekey: "+uniqueKey);
+
+                delegateUpdateUiBox DelegateUpdateUiBox = new delegateUpdateUiBox(UpdateUiTextBox);
+                outcomePush.BeginInvoke(DelegateUpdateUiBox, args.Data);
+                
+                MessageBox.Show("data: " + args.Data);
+
+                //string paths = args.Path;
+               // string key = RemoveNameSubstring(paths);
+               // string uniqueKey = key.Split('/').Last();
+               // MessageBox.Show("path: " + args.Path);
+               // MessageBox.Show("key: " + key);
+               // MessageBox.Show("uniquekey: " + uniqueKey);
 
             });
-            MessageBox.Show("done");
 
-
+        }
+       
+        private void UpdateUiTextBox(string text)
+        {
+            outcomePush.Text = text;
         }
 
         public string RemoveNameSubstring(string name)
         {
+            // to access main thread on listener update
             int index = name.IndexOf("/Name");
             string uniqueKey = (index < 0) ? name : name.Remove(index, "/Name".Length);
             return uniqueKey;
@@ -114,5 +127,9 @@ namespace Firebase_Desktop_Application
 
         }
 
+        private void outcomePush_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
