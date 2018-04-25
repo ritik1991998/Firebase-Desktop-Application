@@ -16,6 +16,8 @@ using System.Windows;
 using FireSharp.EventStreaming;
 using System.Threading;
 using System.Collections;
+using Microsoft.Office.Interop.Excel;
+using System.IO;
 
 namespace Firebase_Desktop_Application
 {
@@ -37,11 +39,11 @@ namespace Firebase_Desktop_Application
             MainPage_OnLoaded();
         }
 
-        private async void push_Click(object sender, EventArgs e)
+        private void push_Click(object sender, EventArgs e)
         {
             //working push gives child as chatmessage object
 
-            pushToDatabase("ritik","ok");
+            pushToDatabase("ritik", "ok");
         }
 
         private async void update_Click(object sender, EventArgs e)
@@ -97,27 +99,26 @@ namespace Firebase_Desktop_Application
 
         private async void nodeListener_Click(object sender, EventArgs e)
         {
-            //MessageBox.Show("ready");
             //attach listener in different thread to input object
             EventStreamResponse response = await _client.OnAsync("input", (sender1, args, context) =>
             {
 
                 delegateUpdateUiBox DelegateUpdateUiBox = new delegateUpdateUiBox(UpdateUiTextBox);
                 outcomePush.BeginInvoke(DelegateUpdateUiBox, args.Data);
-                
+
                 MessageBox.Show("data: " + args.Data);
 
                 //string paths = args.Path;
-               // string key = RemoveNameSubstring(paths);
-               // string uniqueKey = key.Split('/').Last();
-               // MessageBox.Show("path: " + args.Path);
-               // MessageBox.Show("key: " + key);
-               // MessageBox.Show("uniquekey: " + uniqueKey);
+                // string key = RemoveNameSubstring(paths);
+                // string uniqueKey = key.Split('/').Last();
+                // MessageBox.Show("path: " + args.Path);
+                // MessageBox.Show("key: " + key);
+                // MessageBox.Show("uniquekey: " + uniqueKey);
 
             });
 
         }
-       
+
         private void UpdateUiTextBox(string text)
         {   //update ui thread
             //https://www.youtube.com/watch?v=9AIApJmbulY
@@ -141,7 +142,7 @@ namespace Firebase_Desktop_Application
 
         private void testTime_Click(object sender, EventArgs e)
         {
-           
+
         }
 
         private string GetDate()
@@ -152,7 +153,7 @@ namespace Firebase_Desktop_Application
 
         private void submit_Click(object sender, EventArgs e)
         {
-            if(nameBox.Text.Length > 0 && messageBox.Text.Length > 0)
+            if (nameBox.Text.Length > 0 && messageBox.Text.Length > 0)
             {
                 pushToDatabase(nameBox.Text, messageBox.Text);
             }
@@ -163,7 +164,7 @@ namespace Firebase_Desktop_Application
             }
         }
 
-        private async void pushToDatabase(String name,string text)
+        private async void pushToDatabase(String name, string text)
         {
             //custom object to support existing database
             ArrayList liker = new ArrayList();
@@ -187,6 +188,25 @@ namespace Firebase_Desktop_Application
 
             //  MessageBox.Show(asd);
             outcomePush.Text = asd;
+        }
+
+        private void ExcelLocation_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.FileName = "*.xlsx";
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                MessageBox.Show(ofd.FileName);
+                Excel excel = new Excel(ofd.FileName, 1);
+                for(int i = 1; i < 4; i++)
+                {
+                    pushToDatabase(excel.ReadCell(i, 2)+"", excel.ReadCell(i, 3)+"");
+                }
+                
+                outcomePush.Text = excel.ReadCell(0,0)+"";
+                MessageBox.Show(excel.ReadCell(0,0)+"");
+            }
+
         }
     }
 }

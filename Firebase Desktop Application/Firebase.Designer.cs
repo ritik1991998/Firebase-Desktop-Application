@@ -37,11 +37,14 @@
             this.nameBox = new System.Windows.Forms.TextBox();
             this.messageBox = new System.Windows.Forms.TextBox();
             this.submit = new System.Windows.Forms.Button();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.ExcelLocation = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // push
             // 
-            this.push.Location = new System.Drawing.Point(30, 81);
+            this.push.Location = new System.Drawing.Point(30, 57);
             this.push.Name = "push";
             this.push.Size = new System.Drawing.Size(75, 23);
             this.push.TabIndex = 0;
@@ -51,7 +54,7 @@
             // 
             // update
             // 
-            this.update.Location = new System.Drawing.Point(186, 81);
+            this.update.Location = new System.Drawing.Point(187, 57);
             this.update.Name = "update";
             this.update.Size = new System.Drawing.Size(75, 23);
             this.update.TabIndex = 1;
@@ -69,7 +72,7 @@
             // 
             // delete
             // 
-            this.delete.Location = new System.Drawing.Point(381, 81);
+            this.delete.Location = new System.Drawing.Point(369, 57);
             this.delete.Name = "delete";
             this.delete.Size = new System.Drawing.Size(75, 23);
             this.delete.TabIndex = 3;
@@ -79,7 +82,7 @@
             // 
             // nodeListener
             // 
-            this.nodeListener.Location = new System.Drawing.Point(527, 81);
+            this.nodeListener.Location = new System.Drawing.Point(527, 57);
             this.nodeListener.Name = "nodeListener";
             this.nodeListener.Size = new System.Drawing.Size(75, 23);
             this.nodeListener.TabIndex = 4;
@@ -89,7 +92,7 @@
             // 
             // testTime
             // 
-            this.testTime.Location = new System.Drawing.Point(681, 81);
+            this.testTime.Location = new System.Drawing.Point(681, 57);
             this.testTime.Name = "testTime";
             this.testTime.Size = new System.Drawing.Size(75, 23);
             this.testTime.TabIndex = 5;
@@ -101,7 +104,7 @@
             // 
             this.nameBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.nameBox.ForeColor = System.Drawing.SystemColors.InactiveCaption;
-            this.nameBox.Location = new System.Drawing.Point(369, 169);
+            this.nameBox.Location = new System.Drawing.Point(369, 122);
             this.nameBox.Name = "nameBox";
             this.nameBox.Size = new System.Drawing.Size(120, 26);
             this.nameBox.TabIndex = 6;
@@ -111,7 +114,7 @@
             // 
             this.messageBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.messageBox.ForeColor = System.Drawing.SystemColors.InactiveCaption;
-            this.messageBox.Location = new System.Drawing.Point(12, 166);
+            this.messageBox.Location = new System.Drawing.Point(30, 122);
             this.messageBox.Name = "messageBox";
             this.messageBox.Size = new System.Drawing.Size(212, 26);
             this.messageBox.TabIndex = 7;
@@ -119,7 +122,7 @@
             // 
             // submit
             // 
-            this.submit.Location = new System.Drawing.Point(540, 166);
+            this.submit.Location = new System.Drawing.Point(527, 122);
             this.submit.Name = "submit";
             this.submit.Size = new System.Drawing.Size(104, 29);
             this.submit.TabIndex = 8;
@@ -127,11 +130,32 @@
             this.submit.UseVisualStyleBackColor = true;
             this.submit.Click += new System.EventHandler(this.submit_Click);
             // 
+            // dataGridView1
+            // 
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Location = new System.Drawing.Point(30, 190);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.RowTemplate.Height = 24;
+            this.dataGridView1.Size = new System.Drawing.Size(758, 248);
+            this.dataGridView1.TabIndex = 9;
+            // 
+            // ExcelLocation
+            // 
+            this.ExcelLocation.Location = new System.Drawing.Point(684, 122);
+            this.ExcelLocation.Name = "ExcelLocation";
+            this.ExcelLocation.Size = new System.Drawing.Size(104, 62);
+            this.ExcelLocation.TabIndex = 10;
+            this.ExcelLocation.Text = "Open";
+            this.ExcelLocation.UseVisualStyleBackColor = true;
+            this.ExcelLocation.Click += new System.EventHandler(this.ExcelLocation_Click);
+            // 
             // FirebaseUi
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.ExcelLocation);
+            this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.submit);
             this.Controls.Add(this.messageBox);
             this.Controls.Add(this.nameBox);
@@ -143,6 +167,7 @@
             this.Controls.Add(this.push);
             this.Name = "FirebaseUi";
             this.Text = "Firebase Ui";
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -159,6 +184,8 @@
         private System.Windows.Forms.TextBox nameBox;
         private System.Windows.Forms.TextBox messageBox;
         private System.Windows.Forms.Button submit;
+        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.Button ExcelLocation;
     }
 }
 
