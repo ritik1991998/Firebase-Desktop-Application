@@ -43,7 +43,7 @@ namespace Firebase_Desktop_Application
         {
             //working push gives child as chatmessage object
 
-            pushToDatabase("ritik", "ok");
+            //pushToDatabase("ritik", "ok");
         }
 
         private async void update_Click(object sender, EventArgs e)
@@ -106,7 +106,7 @@ namespace Firebase_Desktop_Application
                 delegateUpdateUiBox DelegateUpdateUiBox = new delegateUpdateUiBox(UpdateUiTextBox);
                 outcomePush.BeginInvoke(DelegateUpdateUiBox, args.Data);
 
-                MessageBox.Show("data: " + args.Data);
+                MessageBox.Show("data: " + args.Path);
 
                 //string paths = args.Path;
                 // string key = RemoveNameSubstring(paths);
