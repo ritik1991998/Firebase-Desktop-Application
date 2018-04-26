@@ -12,5 +12,15 @@ namespace Firebase_Desktop_Application
         public ArrayList unlikedUsers { get; set; }
         public ArrayList saveIt { get; set; }
 
+        public ChatMessage(string text, string timeCurrent, string photoUrl, string posterId, ArrayList likedUsers, ArrayList unlikedUsers, ArrayList saveIt)
+        {
+            this.text = text;
+            this.timeCurrent = timeCurrent;
+            this.photoUrl = photoUrl;
+            this.posterId = posterId;
+            this.likedUsers = likedUsers;
+            this.unlikedUsers = unlikedUsers;
+            this.saveIt = saveIt;
+        }
     }
 }

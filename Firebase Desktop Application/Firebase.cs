@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using FireSharp;
 using FireSharp.Interfaces;
-using FireSharp.Config;
 using FireSharp.Response;
 using Firebase_Desktop_Application;
 using System.Windows;
@@ -18,21 +17,24 @@ using System.Threading;
 using System.Collections;
 using Microsoft.Office.Interop.Excel;
 using System.IO;
+using Firebase.Database;
+using Firebase.Database.Query;
 
 namespace Firebase_Desktop_Application
 {
 
     public partial class FirebaseUi : Form
     {
+        Firebase.Database.FirebaseClient firebase;
         public delegate void delegateUpdateUiBox(String text);
-        IFirebaseConfig config1 = new FirebaseConfig
-        {
+        /*        IFirebaseConfig config1 = new FirebaseConfig
+                {
 
-            AuthSecret = Secrets.FirebaseSecret,
-            BasePath = Secrets.BasePath
+                    AuthSecret = Secrets.FirebaseSecret,
+                    BasePath = Secrets.BasePath
 
-        };
-
+                };
+        */
         public FirebaseUi()
         {
             InitializeComponent();
@@ -43,12 +45,12 @@ namespace Firebase_Desktop_Application
         {
             //working push gives child as chatmessage object
 
-            //pushToDatabase("ritik", "ok");
+            pushToDatabase("ritik", "ok");
         }
 
         private async void update_Click(object sender, EventArgs e)
         {
-            //working update updates current node with chatmessage object
+            // add new item directly to the specified location (this will overwrite whatever data already exists at that location)
 
             //custom object to support existing database
             ArrayList liker = new ArrayList();
@@ -57,66 +59,69 @@ namespace Firebase_Desktop_Application
             UnLiker.Add("1234");
             ArrayList favourite = new ArrayList();
             favourite.Add("1234");
-            ChatMessage todo = new ChatMessage
-            {
-                text = "kk",
-                timeCurrent = GetDate(),
-                photoUrl = null,
-                posterId = "Ritik",
-                saveIt = favourite,
-                unlikedUsers = UnLiker,
-                likedUsers = liker
-            };
 
-            FirebaseResponse response = await _client.UpdateAsync("test", todo);
-            ChatMessage todo1 = response.ResultAs<ChatMessage>(); //The response will contain the data written
-            MessageBox.Show(todo1.text);
+            await firebase
+              .Child("test")
+              .PutAsync(new ChatMessage("kk",
+                            GetDate(),
+                            null,
+                            "Ritik",
+                            UnLiker,
+                            liker, favourite));
+            MessageBox.Show("updated!!");
+
+            // delete given child node
+            /*
+
+            /*       
+                        MessageBox.Show(todo1.text);
+            */
         }
 
-        private static FirebaseClient _client;
+        //private static FirebaseClient _client;
 
         private void MainPage_OnLoaded()
         {
-
-            IFirebaseConfig config = new FirebaseConfig
-            {
-                AuthSecret = Secrets.FirebaseSecret,
-                BasePath = Secrets.BasePath
-            };
-
-            _client = new FirebaseClient(config);
-
-
+            var auth = Secrets.FirebaseSecret;
+            firebase = new Firebase.Database.FirebaseClient(
+              Secrets.BasePath,
+              new FirebaseOptions
+              {
+                  AuthTokenAsyncFactory = () => Task.FromResult(auth)
+              });
         }
 
         private async void delete_Click(object sender, EventArgs e)
         {
             //working delete task to delete given node
-            FirebaseResponse response = await _client.DeleteAsync("test"); //Deletes test collection
-            Console.WriteLine(response.StatusCode);
-            MessageBox.Show(response.StatusCode + "");
+            await firebase
+            .Child("test")
+            .DeleteAsync();
+
+            MessageBox.Show("deleted");
         }
 
         private async void nodeListener_Click(object sender, EventArgs e)
         {
-            //attach listener in different thread to input object
-            EventStreamResponse response = await _client.OnAsync("input", (sender1, args, context) =>
-            {
+            /*            //attach listener in different thread to input object
+                        EventStreamResponse response = await _client.OnAsync("input", (sender1, args, context) =>
+                        {
 
-                delegateUpdateUiBox DelegateUpdateUiBox = new delegateUpdateUiBox(UpdateUiTextBox);
-                outcomePush.BeginInvoke(DelegateUpdateUiBox, args.Data);
+                            delegateUpdateUiBox DelegateUpdateUiBox = new delegateUpdateUiBox(UpdateUiTextBox);
+                            outcomePush.BeginInvoke(DelegateUpdateUiBox, args.Data);
 
-                MessageBox.Show("data: " + args.Path);
+                            MessageBox.Show("data: " + args.Path);
 
-                //string paths = args.Path;
-                // string key = RemoveNameSubstring(paths);
-                // string uniqueKey = key.Split('/').Last();
-                // MessageBox.Show("path: " + args.Path);
-                // MessageBox.Show("key: " + key);
-                // MessageBox.Show("uniquekey: " + uniqueKey);
+                            //string paths = args.Path;
+                            // string key = RemoveNameSubstring(paths);
+                            // string uniqueKey = key.Split('/').Last();
+                            // MessageBox.Show("path: " + args.Path);
+                            // MessageBox.Show("key: " + key);
+                            // MessageBox.Show("uniquekey: " + uniqueKey);
 
-            });
+                        });
 
+            */
         }
 
         private void UpdateUiTextBox(string text)
@@ -173,21 +178,19 @@ namespace Firebase_Desktop_Application
             UnLiker.Add("1234");
             ArrayList favourite = new ArrayList();
             favourite.Add("1234");
-            ChatMessage todo = new ChatMessage
-            {
-                text = text,
-                timeCurrent = GetDate(),
-                photoUrl = null,
-                posterId = name,
-                saveIt = favourite,
-                unlikedUsers = UnLiker,
-                likedUsers = liker
-            };
-            PushResponse response = await _client.PushAsync("input", todo);
-            var asd = response.Result.name;
+            var dino = await firebase
+              .Child("test")
+              .PostAsync(new ChatMessage(
+                            text,
+                            GetDate(),
+                            null,
+                            name,
+                            UnLiker,
+                            liker, favourite));
 
             //  MessageBox.Show(asd);
-            outcomePush.Text = asd;
+            outcomePush.Text = dino.Key;
+
         }
 
         private void ExcelLocation_Click(object sender, EventArgs e)
@@ -198,13 +201,13 @@ namespace Firebase_Desktop_Application
             {
                 MessageBox.Show(ofd.FileName);
                 Excel excel = new Excel(ofd.FileName, 1);
-                for(int i = 1; i < 4; i++)
+                for (int i = 1; i < 4; i++)
                 {
-                    pushToDatabase(excel.ReadCell(i, 2)+"", excel.ReadCell(i, 3)+"");
+                    pushToDatabase(excel.ReadCell(i, 2) + "", excel.ReadCell(i, 3) + "");
                 }
-                
-                outcomePush.Text = excel.ReadCell(0,0)+"";
-                MessageBox.Show(excel.ReadCell(0,0)+"");
+
+                outcomePush.Text = excel.ReadCell(0, 0) + "";
+                MessageBox.Show(excel.ReadCell(0, 0) + "");
             }
 
         }
