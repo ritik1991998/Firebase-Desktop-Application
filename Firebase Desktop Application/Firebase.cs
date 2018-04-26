@@ -7,15 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using FireSharp;
-using FireSharp.Interfaces;
-using FireSharp.Response;
 using Firebase_Desktop_Application;
 using System.Windows;
-using FireSharp.EventStreaming;
 using System.Threading;
 using System.Collections;
-using Microsoft.Office.Interop.Excel;
 using System.IO;
 using Firebase.Database;
 using Firebase.Database.Query;
@@ -27,14 +22,7 @@ namespace Firebase_Desktop_Application
     {
         Firebase.Database.FirebaseClient firebase;
         public delegate void delegateUpdateUiBox(String text);
-        /*        IFirebaseConfig config1 = new FirebaseConfig
-                {
-
-                    AuthSecret = Secrets.FirebaseSecret,
-                    BasePath = Secrets.BasePath
-
-                };
-        */
+        
         public FirebaseUi()
         {
             InitializeComponent();
@@ -70,12 +58,6 @@ namespace Firebase_Desktop_Application
                             liker, favourite));
             MessageBox.Show("updated!!");
 
-            // delete given child node
-            /*
-
-            /*       
-                        MessageBox.Show(todo1.text);
-            */
         }
 
         //private static FirebaseClient _client;
@@ -101,27 +83,13 @@ namespace Firebase_Desktop_Application
             MessageBox.Show("deleted");
         }
 
-        private async void nodeListener_Click(object sender, EventArgs e)
+        private void nodeListener_Click(object sender, EventArgs e)
         {
-            /*            //attach listener in different thread to input object
-                        EventStreamResponse response = await _client.OnAsync("input", (sender1, args, context) =>
-                        {
-
-                            delegateUpdateUiBox DelegateUpdateUiBox = new delegateUpdateUiBox(UpdateUiTextBox);
-                            outcomePush.BeginInvoke(DelegateUpdateUiBox, args.Data);
-
-                            MessageBox.Show("data: " + args.Path);
-
-                            //string paths = args.Path;
-                            // string key = RemoveNameSubstring(paths);
-                            // string uniqueKey = key.Split('/').Last();
-                            // MessageBox.Show("path: " + args.Path);
-                            // MessageBox.Show("key: " + key);
-                            // MessageBox.Show("uniquekey: " + uniqueKey);
-
-                        });
-
-            */
+            var observable = firebase
+              .Child("input")
+              .AsObservable<ChatMessage>()
+              .Subscribe(d => MessageBox.Show(d.Object.text+""));
+            MessageBox.Show(observable+"   yup");
         }
 
         private void UpdateUiTextBox(string text)
@@ -179,7 +147,7 @@ namespace Firebase_Desktop_Application
             ArrayList favourite = new ArrayList();
             favourite.Add("1234");
             var dino = await firebase
-              .Child("test")
+              .Child("input")
               .PostAsync(new ChatMessage(
                             text,
                             GetDate(),
