@@ -40,7 +40,6 @@ namespace Firebase_Desktop_Application
         {
             // add new item directly to the specified location (this will overwrite whatever data already exists at that location)
 
-            //custom object to support existing database
             ArrayList liker = new ArrayList();
             liker.Add("12345");
             ArrayList UnLiker = new ArrayList();
@@ -59,8 +58,6 @@ namespace Firebase_Desktop_Application
             MessageBox.Show("updated!!");
 
         }
-
-        //private static FirebaseClient _client;
 
         private void MainPage_OnLoaded()
         {
@@ -85,10 +82,16 @@ namespace Firebase_Desktop_Application
 
         private void nodeListener_Click(object sender, EventArgs e)
         {
-            var observable = firebase
+            /*var observable = firebase
               .Child("input")
               .AsObservable<ChatMessage>()
               .Subscribe(d => MessageBox.Show(d.Object.text+""));
+              */
+            delegateUpdateUiBox DelegateUpdateUiBox = new delegateUpdateUiBox(UpdateUiTextBox);
+            var observable = firebase
+              .Child("input")
+              .AsObservable<ChatMessage>()
+              .Subscribe(d =>outcomePush.BeginInvoke(DelegateUpdateUiBox, d.Object.text + ""));
             MessageBox.Show(observable+"   yup");
         }
 
