@@ -58,7 +58,7 @@ namespace Firebase_Desktop_Application
             ArrayList favourite = new ArrayList();
             favourite.Add("1234");
             ChatMessage todo = new ChatMessage
-            {
+            { 
                 text = "kk",
                 timeCurrent = GetDate(),
                 photoUrl = null,
