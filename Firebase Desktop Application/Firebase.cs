@@ -14,6 +14,10 @@ using System.Collections;
 using System.IO;
 using Firebase.Database;
 using Firebase.Database.Query;
+using Firebase.Database.Streaming;
+using System.Collections.ObjectModel;
+using Microsoft.Win32;
+using System.Reactive.Linq;
 
 namespace Firebase_Desktop_Application
 {
@@ -22,7 +26,7 @@ namespace Firebase_Desktop_Application
     {
         Firebase.Database.FirebaseClient firebase;
         public delegate void delegateUpdateUiBox(String text);
-        
+        IDisposable observable;
         public FirebaseUi()
         {
             InitializeComponent();
@@ -87,12 +91,30 @@ namespace Firebase_Desktop_Application
               .AsObservable<ChatMessage>()
               .Subscribe(d => MessageBox.Show(d.Object.text+""));
               */
-            delegateUpdateUiBox DelegateUpdateUiBox = new delegateUpdateUiBox(UpdateUiTextBox);
+            /*delegateUpdateUiBox DelegateUpdateUiBox = new delegateUpdateUiBox(UpdateUiTextBox);
             var observable = firebase
               .Child("input")
               .AsObservable<ChatMessage>()
               .Subscribe(d =>outcomePush.BeginInvoke(DelegateUpdateUiBox, d.Object.text + ""));
-            MessageBox.Show(observable+"   yup");
+              */
+            delegateUpdateUiBox DelegateUpdateUiBox = new delegateUpdateUiBox(UpdateUiTextBox);
+            observable = firebase
+              .Child("input")
+              .AsObservable<ChatMessage>()
+              .Where(f => !string.IsNullOrEmpty(f.Key))
+              .Subscribe(f =>
+              {
+                  if (f.EventType == FirebaseEventType.InsertOrUpdate)
+                  {
+                      MessageBox.Show("InsertOrUpdate");
+                      outcomePush.BeginInvoke(DelegateUpdateUiBox, f.Object.text);
+                  }
+                  else
+                  {
+                      MessageBox.Show("Remove");
+                      outcomePush.BeginInvoke(DelegateUpdateUiBox, f.Object.text);
+                  }
+              });
         }
 
         private void UpdateUiTextBox(string text)
@@ -118,7 +140,7 @@ namespace Firebase_Desktop_Application
 
         private void testTime_Click(object sender, EventArgs e)
         {
-
+            observable.Dispose();
         }
 
         private string GetDate()
@@ -179,6 +201,49 @@ namespace Firebase_Desktop_Application
 
                 outcomePush.Text = excel.ReadCell(0, 0) + "";
                 MessageBox.Show(excel.ReadCell(0, 0) + "");
+            }
+
+        }
+
+        private string ReadFromRegistry(string key,string subkey)
+        {
+            RegistryKey rk = Registry.CurrentUser.OpenSubKey(subkey);
+            if (rk == null)
+            {
+                MessageBox.Show("read null");
+                return null;
+            }
+            else return rk.GetValue(key.ToUpper()) + "";
+        }
+        private void WritetoRegistry(string key,string subkey,string value)
+        {
+            string[] strings = { "One", "Two", "Three" };
+            Registry.SetValue(keyName, "TestArray", strings);
+        }
+        const string userRoot = "HKEY_CURRENT_USER";
+        const string subkey1 = "RegistrySetValueExample";
+        const string keyName = userRoot + "\\" + subkey1;
+
+        private void DeleteFromRegistry(string subkey)
+        {
+            Registry.CurrentUser.DeleteSubKeyTree(subkey);
+            MessageBox.Show(subkey+" deleted");
+        }
+
+
+        private void registry_Click(object sender, EventArgs e)
+        {
+            WritetoRegistry("Name", "hindi", "narendra modi");
+        }
+
+        private void readRegistry_Click(object sender, EventArgs e)
+        {
+            string[] tArray = (string[])Registry.GetValue(keyName,
+            "TestArray",
+            new string[] { "Default if TestArray does not exist." });
+            for (int i = 0; i < tArray.Length; i++)
+            {
+                MessageBox.Show($"TestArray({i}): {tArray[i]}");
             }
 
         }
