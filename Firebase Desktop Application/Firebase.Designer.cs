@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.push = new System.Windows.Forms.Button();
             this.update = new System.Windows.Forms.Button();
             this.outcomePush = new System.Windows.Forms.TextBox();
@@ -42,7 +43,18 @@
             this.registry = new System.Windows.Forms.Button();
             this.readRegistry = new System.Windows.Forms.Button();
             this.fileNameListBox = new System.Windows.Forms.ListBox();
+            this.printAsExcel = new System.Windows.Forms.Button();
+            this.printToExcel = new System.Windows.Forms.Button();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.ProcessingLabel = new System.Windows.Forms.Label();
+            this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
+            this.chatMessageBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.textDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.timeCurrentDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.photoUrlDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.posterIdDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chatMessageBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // push
@@ -85,7 +97,7 @@
             // 
             // nodeListener
             // 
-            this.nodeListener.Location = new System.Drawing.Point(527, 57);
+            this.nodeListener.Location = new System.Drawing.Point(477, 57);
             this.nodeListener.Name = "nodeListener";
             this.nodeListener.Size = new System.Drawing.Size(75, 23);
             this.nodeListener.TabIndex = 4;
@@ -95,7 +107,7 @@
             // 
             // disposeListener
             // 
-            this.disposeListener.Location = new System.Drawing.Point(672, 57);
+            this.disposeListener.Location = new System.Drawing.Point(742, 57);
             this.disposeListener.Name = "disposeListener";
             this.disposeListener.Size = new System.Drawing.Size(116, 23);
             this.disposeListener.TabIndex = 5;
@@ -107,7 +119,7 @@
             // 
             this.nameBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.nameBox.ForeColor = System.Drawing.SystemColors.InactiveCaption;
-            this.nameBox.Location = new System.Drawing.Point(248, 119);
+            this.nameBox.Location = new System.Drawing.Point(248, 101);
             this.nameBox.Name = "nameBox";
             this.nameBox.Size = new System.Drawing.Size(120, 26);
             this.nameBox.TabIndex = 6;
@@ -117,7 +129,7 @@
             // 
             this.messageBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.messageBox.ForeColor = System.Drawing.SystemColors.InactiveCaption;
-            this.messageBox.Location = new System.Drawing.Point(46, 119);
+            this.messageBox.Location = new System.Drawing.Point(12, 101);
             this.messageBox.Name = "messageBox";
             this.messageBox.Size = new System.Drawing.Size(196, 26);
             this.messageBox.TabIndex = 7;
@@ -125,7 +137,7 @@
             // 
             // submit
             // 
-            this.submit.Location = new System.Drawing.Point(385, 119);
+            this.submit.Location = new System.Drawing.Point(385, 98);
             this.submit.Name = "submit";
             this.submit.Size = new System.Drawing.Size(104, 29);
             this.submit.TabIndex = 8;
@@ -135,16 +147,23 @@
             // 
             // dataGridView1
             // 
+            this.dataGridView1.AutoGenerateColumns = false;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(30, 273);
+            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.textDataGridViewTextBoxColumn,
+            this.timeCurrentDataGridViewTextBoxColumn,
+            this.photoUrlDataGridViewTextBoxColumn,
+            this.posterIdDataGridViewTextBoxColumn});
+            this.dataGridView1.DataSource = this.chatMessageBindingSource;
+            this.dataGridView1.Location = new System.Drawing.Point(30, 225);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(758, 165);
+            this.dataGridView1.Size = new System.Drawing.Size(758, 213);
             this.dataGridView1.TabIndex = 9;
             // 
             // ExcelLocation
             // 
-            this.ExcelLocation.Location = new System.Drawing.Point(684, 122);
+            this.ExcelLocation.Location = new System.Drawing.Point(672, 151);
             this.ExcelLocation.Name = "ExcelLocation";
             this.ExcelLocation.Size = new System.Drawing.Size(104, 62);
             this.ExcelLocation.TabIndex = 10;
@@ -154,9 +173,9 @@
             // 
             // registry
             // 
-            this.registry.Location = new System.Drawing.Point(527, 125);
+            this.registry.Location = new System.Drawing.Point(527, 96);
             this.registry.Name = "registry";
-            this.registry.Size = new System.Drawing.Size(116, 23);
+            this.registry.Size = new System.Drawing.Size(116, 31);
             this.registry.TabIndex = 11;
             this.registry.Text = "write registry";
             this.registry.UseVisualStyleBackColor = true;
@@ -164,7 +183,7 @@
             // 
             // readRegistry
             // 
-            this.readRegistry.Location = new System.Drawing.Point(527, 154);
+            this.readRegistry.Location = new System.Drawing.Point(672, 104);
             this.readRegistry.Name = "readRegistry";
             this.readRegistry.Size = new System.Drawing.Size(116, 23);
             this.readRegistry.TabIndex = 12;
@@ -176,17 +195,94 @@
             // 
             this.fileNameListBox.FormattingEnabled = true;
             this.fileNameListBox.ItemHeight = 16;
-            this.fileNameListBox.Location = new System.Drawing.Point(472, 183);
+            this.fileNameListBox.Location = new System.Drawing.Point(385, 151);
             this.fileNameListBox.Name = "fileNameListBox";
-            this.fileNameListBox.Size = new System.Drawing.Size(171, 84);
+            this.fileNameListBox.Size = new System.Drawing.Size(258, 68);
             this.fileNameListBox.TabIndex = 13;
             this.fileNameListBox.DoubleClick += new System.EventHandler(this.fileNameListBox_DoubleClick);
+            // 
+            // printAsExcel
+            // 
+            this.printAsExcel.Location = new System.Drawing.Point(805, 415);
+            this.printAsExcel.Name = "printAsExcel";
+            this.printAsExcel.Size = new System.Drawing.Size(108, 23);
+            this.printAsExcel.TabIndex = 14;
+            this.printAsExcel.Text = "print to datagrid";
+            this.printAsExcel.UseVisualStyleBackColor = true;
+            this.printAsExcel.Click += new System.EventHandler(this.printToDataGrid_Click);
+            // 
+            // printToExcel
+            // 
+            this.printToExcel.Location = new System.Drawing.Point(805, 361);
+            this.printToExcel.Name = "printToExcel";
+            this.printToExcel.Size = new System.Drawing.Size(108, 23);
+            this.printToExcel.TabIndex = 15;
+            this.printToExcel.Text = "print to excel";
+            this.printToExcel.UseVisualStyleBackColor = true;
+            this.printToExcel.Click += new System.EventHandler(this.printToExcel_Click);
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(30, 445);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(758, 23);
+            this.progressBar1.TabIndex = 16;
+            // 
+            // ProcessingLabel
+            // 
+            this.ProcessingLabel.AutoSize = true;
+            this.ProcessingLabel.Location = new System.Drawing.Point(805, 453);
+            this.ProcessingLabel.Name = "ProcessingLabel";
+            this.ProcessingLabel.Size = new System.Drawing.Size(90, 17);
+            this.ProcessingLabel.TabIndex = 17;
+            this.ProcessingLabel.Text = "Processing...";
+            // 
+            // backgroundWorker
+            // 
+            this.backgroundWorker.WorkerReportsProgress = true;
+            this.backgroundWorker.WorkerSupportsCancellation = true;
+            this.backgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker_DoWork);
+            this.backgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker_ProgressChanged);
+            this.backgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker_RunWorkerCompleted);
+            // 
+            // chatMessageBindingSource
+            // 
+            this.chatMessageBindingSource.DataSource = typeof(Firebase_Desktop_Application.ChatMessage);
+            this.chatMessageBindingSource.CurrentChanged += new System.EventHandler(this.chatMessageBindingSource_CurrentChanged);
+            // 
+            // textDataGridViewTextBoxColumn
+            // 
+            this.textDataGridViewTextBoxColumn.DataPropertyName = "text";
+            this.textDataGridViewTextBoxColumn.HeaderText = "text";
+            this.textDataGridViewTextBoxColumn.Name = "textDataGridViewTextBoxColumn";
+            // 
+            // timeCurrentDataGridViewTextBoxColumn
+            // 
+            this.timeCurrentDataGridViewTextBoxColumn.DataPropertyName = "timeCurrent";
+            this.timeCurrentDataGridViewTextBoxColumn.HeaderText = "timeCurrent";
+            this.timeCurrentDataGridViewTextBoxColumn.Name = "timeCurrentDataGridViewTextBoxColumn";
+            // 
+            // photoUrlDataGridViewTextBoxColumn
+            // 
+            this.photoUrlDataGridViewTextBoxColumn.DataPropertyName = "photoUrl";
+            this.photoUrlDataGridViewTextBoxColumn.HeaderText = "photoUrl";
+            this.photoUrlDataGridViewTextBoxColumn.Name = "photoUrlDataGridViewTextBoxColumn";
+            // 
+            // posterIdDataGridViewTextBoxColumn
+            // 
+            this.posterIdDataGridViewTextBoxColumn.DataPropertyName = "posterId";
+            this.posterIdDataGridViewTextBoxColumn.HeaderText = "posterId";
+            this.posterIdDataGridViewTextBoxColumn.Name = "posterIdDataGridViewTextBoxColumn";
             // 
             // FirebaseUi
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(911, 482);
+            this.Controls.Add(this.ProcessingLabel);
+            this.Controls.Add(this.progressBar1);
+            this.Controls.Add(this.printToExcel);
+            this.Controls.Add(this.printAsExcel);
             this.Controls.Add(this.fileNameListBox);
             this.Controls.Add(this.readRegistry);
             this.Controls.Add(this.registry);
@@ -204,6 +300,7 @@
             this.Name = "FirebaseUi";
             this.Text = "Firebase Ui";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chatMessageBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -225,6 +322,16 @@
         private System.Windows.Forms.Button registry;
         private System.Windows.Forms.Button readRegistry;
         private System.Windows.Forms.ListBox fileNameListBox;
+        private System.Windows.Forms.Button printAsExcel;
+        private System.Windows.Forms.Button printToExcel;
+        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.Label ProcessingLabel;
+        private System.ComponentModel.BackgroundWorker backgroundWorker;
+        private System.Windows.Forms.DataGridViewTextBoxColumn textDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn timeCurrentDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn photoUrlDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn posterIdDataGridViewTextBoxColumn;
+        private System.Windows.Forms.BindingSource chatMessageBindingSource;
     }
 }
 

@@ -26,7 +26,10 @@ namespace Firebase_Desktop_Application
         public delegate void delegateUpdateUiBox(String text);
         IDisposable observable;
         List<string> fileName;
+        List<ChatMessage> chats;
         BindingSource fileNameBinding = new BindingSource();
+        BindingSource dataGridViewBinding = new BindingSource();
+
         public FirebaseUi()
         {
             InitializeComponent();
@@ -41,6 +44,8 @@ namespace Firebase_Desktop_Application
               {
                   AuthTokenAsyncFactory = () => Task.FromResult(auth)
               });
+            chats = new List<ChatMessage>();
+
             fileName = new List<string>();
             string[] tArray = (string[])Registry.GetValue(keyName,
             "TestArray",
@@ -49,6 +54,7 @@ namespace Firebase_Desktop_Application
             {
                 fileName.Add(tArray[i]);
             }
+            dataGridView1.DataSource = dataGridViewBinding;
             fileNameBinding.DataSource = fileName;
             //only add unsold items 
 
@@ -86,8 +92,6 @@ namespace Firebase_Desktop_Application
 
         }
 
-        
-
         private async void delete_Click(object sender, EventArgs e)
         {
             //working delete task to delete given node
@@ -113,24 +117,29 @@ namespace Firebase_Desktop_Application
               */
             delegateUpdateUiBox DelegateUpdateUiBox = new delegateUpdateUiBox(UpdateUiTextBox);
             observable = firebase
-              .Child("input")
+              .Child("test")
               .AsObservable<ChatMessage>()
               .Where(f => !string.IsNullOrEmpty(f.Key))
               .Subscribe(f =>
               {
                   if (f.EventType == FirebaseEventType.InsertOrUpdate)
                   {
+                      //MessageBox.Show(chats.Any(x => x.timeCurrent == f.Object.timeCurrent)+" ");
+                      if (!chats.Any(x => x.timeCurrent == f.Object.timeCurrent)) chats.Add(f.Object);
+
                       MessageBox.Show("InsertOrUpdate");
+                      
                       outcomePush.BeginInvoke(DelegateUpdateUiBox, f.Object.text);
                   }
                   else
                   {
+                      chats.Remove(f.Object);
                       MessageBox.Show("Remove");
                       outcomePush.BeginInvoke(DelegateUpdateUiBox, f.Object.text);
                   }
               });
         }
-
+       
         private void UpdateUiTextBox(string text)
         {   //update ui thread
             //https://www.youtube.com/watch?v=9AIApJmbulY
@@ -178,7 +187,6 @@ namespace Firebase_Desktop_Application
 
         private async void pushToDatabase(String name, string text)
         {
-            //custom object to support existing database
             ArrayList liker = new ArrayList();
             liker.Add("12345");
             ArrayList UnLiker = new ArrayList();
@@ -186,7 +194,7 @@ namespace Firebase_Desktop_Application
             ArrayList favourite = new ArrayList();
             favourite.Add("1234");
             var dino = await firebase
-              .Child("input")
+              .Child("test")
               .PostAsync(new ChatMessage(
                             text,
                             GetDate(),
@@ -197,7 +205,6 @@ namespace Firebase_Desktop_Application
 
             //  MessageBox.Show(asd);
             outcomePush.Text = dino.Key;
-
         }
 
         private void ExcelLocation_Click(object sender, EventArgs e)
@@ -254,10 +261,6 @@ namespace Firebase_Desktop_Application
         }
         private void WritetoRegistry(string key,string subkey,string value)
         {
-            List<string> liker = new List<string>();
-            liker.Add("12345");
-            liker.Add("45678");
-            
             string[] strings = fileName.ToArray();
             Registry.SetValue(keyName, "TestArray", strings);
         }
@@ -279,7 +282,21 @@ namespace Firebase_Desktop_Application
 
         private void readRegistry_Click(object sender, EventArgs e)
         {
-            
+            ArrayList liker = new ArrayList();
+            liker.Add("12345");
+            ArrayList UnLiker = new ArrayList();
+            UnLiker.Add("1234");
+            ArrayList favourite = new ArrayList();
+            favourite.Add("1234");
+            ChatMessage asdf = new ChatMessage(
+                            "srk",
+                            GetDate(),
+                            "kuuu",
+                            "anushka",
+                            UnLiker,
+                            liker, favourite);
+            chats.Add(asdf);
+            MessageBox.Show(chats[0].text);
         }
 
         private void fileNameListBox_DoubleClick(object sender, EventArgs e)
@@ -312,6 +329,50 @@ namespace Firebase_Desktop_Application
             {
                 MessageBox.Show("Something's wrong");
             }
+        }
+
+        private void printAsExcel_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void printToDataGrid_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(chats.Count + "");
+            //dataGridView1.DataSource = chats;
+            //dataGridView1.Update();
+            //dataGridView1.Refresh();
+
+            dataGridViewBinding.DataSource = chats;
+
+            dataGridViewBinding.ResetBindings(false);
+
+            dataGridView1.DataSource = dataGridViewBinding;
+        }
+
+        private void printToExcel_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void backgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+
+        }
+
+        private void backgroundWorker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
+        {
+
+        }
+
+        private void backgroundWorker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        {
+
+        }
+
+        private void chatMessageBindingSource_CurrentChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
