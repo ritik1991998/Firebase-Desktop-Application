@@ -41,6 +41,7 @@
             this.ExcelLocation = new System.Windows.Forms.Button();
             this.registry = new System.Windows.Forms.Button();
             this.readRegistry = new System.Windows.Forms.Button();
+            this.fileNameListBox = new System.Windows.Forms.ListBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -135,10 +136,10 @@
             // dataGridView1
             // 
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(30, 190);
+            this.dataGridView1.Location = new System.Drawing.Point(30, 273);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(758, 248);
+            this.dataGridView1.Size = new System.Drawing.Size(758, 165);
             this.dataGridView1.TabIndex = 9;
             // 
             // ExcelLocation
@@ -171,11 +172,22 @@
             this.readRegistry.UseVisualStyleBackColor = true;
             this.readRegistry.Click += new System.EventHandler(this.readRegistry_Click);
             // 
+            // fileNameListBox
+            // 
+            this.fileNameListBox.FormattingEnabled = true;
+            this.fileNameListBox.ItemHeight = 16;
+            this.fileNameListBox.Location = new System.Drawing.Point(472, 183);
+            this.fileNameListBox.Name = "fileNameListBox";
+            this.fileNameListBox.Size = new System.Drawing.Size(171, 84);
+            this.fileNameListBox.TabIndex = 13;
+            this.fileNameListBox.DoubleClick += new System.EventHandler(this.fileNameListBox_DoubleClick);
+            // 
             // FirebaseUi
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.fileNameListBox);
             this.Controls.Add(this.readRegistry);
             this.Controls.Add(this.registry);
             this.Controls.Add(this.ExcelLocation);
@@ -212,6 +224,7 @@
         private System.Windows.Forms.Button ExcelLocation;
         private System.Windows.Forms.Button registry;
         private System.Windows.Forms.Button readRegistry;
+        private System.Windows.Forms.ListBox fileNameListBox;
     }
 }
 

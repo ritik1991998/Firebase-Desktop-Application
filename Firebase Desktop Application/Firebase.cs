@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
@@ -8,8 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Firebase_Desktop_Application;
-using System.Windows;
-using System.Threading;
 using System.Collections;
 using System.IO;
 using Firebase.Database;
@@ -18,6 +15,7 @@ using Firebase.Database.Streaming;
 using System.Collections.ObjectModel;
 using Microsoft.Win32;
 using System.Reactive.Linq;
+using System.Data.OleDb;
 
 namespace Firebase_Desktop_Application
 {
@@ -27,10 +25,35 @@ namespace Firebase_Desktop_Application
         Firebase.Database.FirebaseClient firebase;
         public delegate void delegateUpdateUiBox(String text);
         IDisposable observable;
+        List<string> fileName;
+        BindingSource fileNameBinding = new BindingSource();
         public FirebaseUi()
         {
             InitializeComponent();
             MainPage_OnLoaded();
+        }
+        private void MainPage_OnLoaded()
+        {
+            var auth = Secrets.FirebaseSecret;
+            firebase = new Firebase.Database.FirebaseClient(
+              Secrets.BasePath,
+              new FirebaseOptions
+              {
+                  AuthTokenAsyncFactory = () => Task.FromResult(auth)
+              });
+            fileName = new List<string>();
+            string[] tArray = (string[])Registry.GetValue(keyName,
+            "TestArray",
+            new string[] { "Not Found!!" });
+            for (int i = 0; i < tArray.Length; i++)
+            {
+                fileName.Add(tArray[i]);
+            }
+            fileNameBinding.DataSource = fileName;
+            //only add unsold items 
+
+            fileNameListBox.DataSource = fileNameBinding;
+
         }
 
         private void push_Click(object sender, EventArgs e)
@@ -63,16 +86,7 @@ namespace Firebase_Desktop_Application
 
         }
 
-        private void MainPage_OnLoaded()
-        {
-            var auth = Secrets.FirebaseSecret;
-            firebase = new Firebase.Database.FirebaseClient(
-              Secrets.BasePath,
-              new FirebaseOptions
-              {
-                  AuthTokenAsyncFactory = () => Task.FromResult(auth)
-              });
-        }
+        
 
         private async void delete_Click(object sender, EventArgs e)
         {
@@ -192,8 +206,21 @@ namespace Firebase_Desktop_Application
             ofd.FileName = "*.xlsx";
             if (ofd.ShowDialog() == DialogResult.OK)
             {
-                MessageBox.Show(ofd.FileName);
-                Excel excel = new Excel(ofd.FileName, 1);
+                fileName.Add(ofd.FileName);
+                fileNameBinding.DataSource = fileName;
+
+                fileNameBinding.ResetBindings(false);
+
+                //openExcelFile(ofd.FileName, 1);
+            }
+
+        }
+
+        private void openExcelFile(string path,int sheetNo)
+        {
+            try
+            {
+                Excel excel = new Excel(path, 1);
                 for (int i = 1; i < 4; i++)
                 {
                     pushToDatabase(excel.ReadCell(i, 2) + "", excel.ReadCell(i, 3) + "");
@@ -201,8 +228,18 @@ namespace Firebase_Desktop_Application
 
                 outcomePush.Text = excel.ReadCell(0, 0) + "";
                 MessageBox.Show(excel.ReadCell(0, 0) + "");
-            }
 
+                openExcelDataView(path);
+            }
+            catch (System.Runtime.InteropServices.COMException)
+            {
+                MessageBox.Show("File removed, renamed or deleted");
+                fileName.Remove(path);
+                fileNameBinding.DataSource = fileName;
+
+                fileNameBinding.ResetBindings(false);
+
+            }
         }
 
         private string ReadFromRegistry(string key,string subkey)
@@ -217,7 +254,11 @@ namespace Firebase_Desktop_Application
         }
         private void WritetoRegistry(string key,string subkey,string value)
         {
-            string[] strings = { "One", "Two", "Three" };
+            List<string> liker = new List<string>();
+            liker.Add("12345");
+            liker.Add("45678");
+            
+            string[] strings = fileName.ToArray();
             Registry.SetValue(keyName, "TestArray", strings);
         }
         const string userRoot = "HKEY_CURRENT_USER";
@@ -238,14 +279,39 @@ namespace Firebase_Desktop_Application
 
         private void readRegistry_Click(object sender, EventArgs e)
         {
-            string[] tArray = (string[])Registry.GetValue(keyName,
-            "TestArray",
-            new string[] { "Default if TestArray does not exist." });
-            for (int i = 0; i < tArray.Length; i++)
-            {
-                MessageBox.Show($"TestArray({i}): {tArray[i]}");
-            }
+            
+        }
 
+        private void fileNameListBox_DoubleClick(object sender, EventArgs e)
+        {
+            openExcelFile(fileNameListBox.SelectedItem.ToString(), 1);
+
+        }
+
+        private void openExcelDataView(string path)
+        {
+
+            //solve error by downloading:   https://www.microsoft.com/en-us/download/confirmation.aspx?id=13255
+            try
+            {
+                String name = "Sheet1";
+                String constr = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" +
+                                path +
+                                ";Extended Properties='Excel 12.0 XML;HDR=YES;';";
+
+                OleDbConnection con = new OleDbConnection(constr);
+                OleDbCommand oconn = new OleDbCommand("Select * From [" + name + "$]", con);
+                con.Open();
+
+                OleDbDataAdapter sda = new OleDbDataAdapter(oconn);
+                DataTable data = new DataTable();
+                sda.Fill(data);
+                dataGridView1.DataSource = data;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Something's wrong");
+            }
         }
     }
 }
