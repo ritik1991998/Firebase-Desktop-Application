@@ -39,6 +39,11 @@
             this.messageBox = new System.Windows.Forms.TextBox();
             this.submit = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.textDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.timeCurrentDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.photoUrlDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.posterIdDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.chatMessageBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.ExcelLocation = new System.Windows.Forms.Button();
             this.registry = new System.Windows.Forms.Button();
             this.readRegistry = new System.Windows.Forms.Button();
@@ -48,11 +53,6 @@
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.ProcessingLabel = new System.Windows.Forms.Label();
             this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
-            this.chatMessageBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.textDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.timeCurrentDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.photoUrlDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.posterIdDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chatMessageBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -161,6 +161,35 @@
             this.dataGridView1.Size = new System.Drawing.Size(758, 213);
             this.dataGridView1.TabIndex = 9;
             // 
+            // textDataGridViewTextBoxColumn
+            // 
+            this.textDataGridViewTextBoxColumn.DataPropertyName = "text";
+            this.textDataGridViewTextBoxColumn.HeaderText = "text";
+            this.textDataGridViewTextBoxColumn.Name = "textDataGridViewTextBoxColumn";
+            // 
+            // timeCurrentDataGridViewTextBoxColumn
+            // 
+            this.timeCurrentDataGridViewTextBoxColumn.DataPropertyName = "timeCurrent";
+            this.timeCurrentDataGridViewTextBoxColumn.HeaderText = "timeCurrent";
+            this.timeCurrentDataGridViewTextBoxColumn.Name = "timeCurrentDataGridViewTextBoxColumn";
+            // 
+            // photoUrlDataGridViewTextBoxColumn
+            // 
+            this.photoUrlDataGridViewTextBoxColumn.DataPropertyName = "photoUrl";
+            this.photoUrlDataGridViewTextBoxColumn.HeaderText = "photoUrl";
+            this.photoUrlDataGridViewTextBoxColumn.Name = "photoUrlDataGridViewTextBoxColumn";
+            // 
+            // posterIdDataGridViewTextBoxColumn
+            // 
+            this.posterIdDataGridViewTextBoxColumn.DataPropertyName = "posterId";
+            this.posterIdDataGridViewTextBoxColumn.HeaderText = "posterId";
+            this.posterIdDataGridViewTextBoxColumn.Name = "posterIdDataGridViewTextBoxColumn";
+            // 
+            // chatMessageBindingSource
+            // 
+            this.chatMessageBindingSource.DataSource = typeof(Firebase_Desktop_Application.ChatMessage);
+            this.chatMessageBindingSource.CurrentChanged += new System.EventHandler(this.chatMessageBindingSource_CurrentChanged);
+            // 
             // ExcelLocation
             // 
             this.ExcelLocation.Location = new System.Drawing.Point(672, 151);
@@ -203,9 +232,9 @@
             // 
             // printAsExcel
             // 
-            this.printAsExcel.Location = new System.Drawing.Point(805, 415);
+            this.printAsExcel.Location = new System.Drawing.Point(794, 415);
             this.printAsExcel.Name = "printAsExcel";
-            this.printAsExcel.Size = new System.Drawing.Size(108, 23);
+            this.printAsExcel.Size = new System.Drawing.Size(119, 23);
             this.printAsExcel.TabIndex = 14;
             this.printAsExcel.Text = "print to datagrid";
             this.printAsExcel.UseVisualStyleBackColor = true;
@@ -244,35 +273,6 @@
             this.backgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker_DoWork);
             this.backgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker_ProgressChanged);
             this.backgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker_RunWorkerCompleted);
-            // 
-            // chatMessageBindingSource
-            // 
-            this.chatMessageBindingSource.DataSource = typeof(Firebase_Desktop_Application.ChatMessage);
-            this.chatMessageBindingSource.CurrentChanged += new System.EventHandler(this.chatMessageBindingSource_CurrentChanged);
-            // 
-            // textDataGridViewTextBoxColumn
-            // 
-            this.textDataGridViewTextBoxColumn.DataPropertyName = "text";
-            this.textDataGridViewTextBoxColumn.HeaderText = "text";
-            this.textDataGridViewTextBoxColumn.Name = "textDataGridViewTextBoxColumn";
-            // 
-            // timeCurrentDataGridViewTextBoxColumn
-            // 
-            this.timeCurrentDataGridViewTextBoxColumn.DataPropertyName = "timeCurrent";
-            this.timeCurrentDataGridViewTextBoxColumn.HeaderText = "timeCurrent";
-            this.timeCurrentDataGridViewTextBoxColumn.Name = "timeCurrentDataGridViewTextBoxColumn";
-            // 
-            // photoUrlDataGridViewTextBoxColumn
-            // 
-            this.photoUrlDataGridViewTextBoxColumn.DataPropertyName = "photoUrl";
-            this.photoUrlDataGridViewTextBoxColumn.HeaderText = "photoUrl";
-            this.photoUrlDataGridViewTextBoxColumn.Name = "photoUrlDataGridViewTextBoxColumn";
-            // 
-            // posterIdDataGridViewTextBoxColumn
-            // 
-            this.posterIdDataGridViewTextBoxColumn.DataPropertyName = "posterId";
-            this.posterIdDataGridViewTextBoxColumn.HeaderText = "posterId";
-            this.posterIdDataGridViewTextBoxColumn.Name = "posterIdDataGridViewTextBoxColumn";
             // 
             // FirebaseUi
             // 

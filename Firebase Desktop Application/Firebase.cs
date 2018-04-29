@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Firebase_Desktop_Application;
 using System.Collections;
 using System.IO;
 using Firebase.Database;
@@ -128,7 +127,7 @@ namespace Firebase_Desktop_Application
                       if (!chats.Any(x => x.timeCurrent == f.Object.timeCurrent)) chats.Add(f.Object);
 
                       MessageBox.Show("InsertOrUpdate");
-                      
+
                       outcomePush.BeginInvoke(DelegateUpdateUiBox, f.Object.text);
                   }
                   else
@@ -139,7 +138,7 @@ namespace Firebase_Desktop_Application
                   }
               });
         }
-       
+
         private void UpdateUiTextBox(string text)
         {   //update ui thread
             //https://www.youtube.com/watch?v=9AIApJmbulY
@@ -223,7 +222,7 @@ namespace Firebase_Desktop_Application
 
         }
 
-        private void openExcelFile(string path,int sheetNo)
+        private void openExcelFile(string path, int sheetNo)
         {
             try
             {
@@ -249,7 +248,7 @@ namespace Firebase_Desktop_Application
             }
         }
 
-        private string ReadFromRegistry(string key,string subkey)
+        private string ReadFromRegistry(string key, string subkey)
         {
             RegistryKey rk = Registry.CurrentUser.OpenSubKey(subkey);
             if (rk == null)
@@ -259,7 +258,7 @@ namespace Firebase_Desktop_Application
             }
             else return rk.GetValue(key.ToUpper()) + "";
         }
-        private void WritetoRegistry(string key,string subkey,string value)
+        private void WritetoRegistry(string key, string subkey, string value)
         {
             string[] strings = fileName.ToArray();
             Registry.SetValue(keyName, "TestArray", strings);
@@ -271,9 +270,8 @@ namespace Firebase_Desktop_Application
         private void DeleteFromRegistry(string subkey)
         {
             Registry.CurrentUser.DeleteSubKeyTree(subkey);
-            MessageBox.Show(subkey+" deleted");
+            MessageBox.Show(subkey + " deleted");
         }
-
 
         private void registry_Click(object sender, EventArgs e)
         {
@@ -309,8 +307,8 @@ namespace Firebase_Desktop_Application
         {
 
             //solve error by downloading:   https://www.microsoft.com/en-us/download/confirmation.aspx?id=13255
-            try
-            {
+            //try
+            //{
                 String name = "Sheet1";
                 String constr = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" +
                                 path +
@@ -324,21 +322,21 @@ namespace Firebase_Desktop_Application
                 DataTable data = new DataTable();
                 sda.Fill(data);
                 dataGridView1.DataSource = data;
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("Something's wrong");
-            }
+            //}
+            //catch (Exception)
+            //{
+               // MessageBox.Show("Something's wrong");
+            //}
         }
 
         private void printAsExcel_Click(object sender, EventArgs e)
         {
-            
+
         }
 
         private void printToDataGrid_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(chats.Count + "");
+            //MessageBox.Show(chats.Count + "");
             //dataGridView1.DataSource = chats;
             //dataGridView1.Update();
             //dataGridView1.Refresh();
@@ -352,7 +350,56 @@ namespace Firebase_Desktop_Application
 
         private void printToExcel_Click(object sender, EventArgs e)
         {
+            Microsoft.Office.Interop.Excel._Application app = new Microsoft.Office.Interop.Excel.Application();
+            Microsoft.Office.Interop.Excel._Workbook wb = app.Workbooks.Add(Type.Missing);
+            Microsoft.Office.Interop.Excel._Worksheet ws = null;
+            ws = wb.Sheets["Sheet1"];
+            ws = wb.ActiveSheet;
+            ws.Name = "Sheet1";
+            ws.Cells[1, 1] = "S.no";
 
+            for (int i = 1; i <= dataGridView1.Columns.Count; i++)
+            {
+                ws.Cells[1, i + 1] = dataGridView1.Columns[i - 1].HeaderText;
+            }
+            for (int i = 1; i <= dataGridView1.Rows.Count; i++)
+            {
+                for (int j = 1; j <= dataGridView1.Columns.Count; j++)
+                {
+                    // MessageBox.Show(i+":i ;j:"+j);
+
+                    ws.Cells[i + 1, j + 1] = dataGridView1.Rows[i - 1].Cells[j - 1].Value;
+                }
+                ws.Cells[i + 1, 1] = i;
+            }
+
+
+            var saveFileDialog = new SaveFileDialog();
+            saveFileDialog.FileName = "chats";
+            saveFileDialog.DefaultExt = ".xlsx";
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+
+                // try
+                //{
+                wb.SaveAs(saveFileDialog.FileName, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlExclusive, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                MessageBox.Show("The file would have been saved as " + saveFileDialog.FileName
+                );
+                fileName.Add(saveFileDialog.FileName);
+                fileNameBinding.DataSource = fileName;
+
+                fileNameBinding.ResetBindings(false);
+                // }
+                //catch (Exception)
+                //{
+                //  MessageBox.Show("error occured");
+                //}
+            }
+            else
+                MessageBox.Show("The Cancel button was clicked or Esc was pressed");
+
+
+            app.Quit();
         }
 
         private void backgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
@@ -372,6 +419,13 @@ namespace Firebase_Desktop_Application
 
         private void chatMessageBindingSource_CurrentChanged(object sender, EventArgs e)
         {
+
+        }
+
+        private void FirebaseUi_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            MessageBox.Show("closing");
+            WritetoRegistry("Name", "hindi", "narendra modi");
 
         }
     }
