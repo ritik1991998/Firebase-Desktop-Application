@@ -21,6 +21,22 @@ namespace Firebase_Desktop_Application
             ws = wb.Worksheets[sheet];
             
         }
+        public void Dump()
+        {
+            //
+            wb.Close();
+            //excel.Workbooks.Close();
+
+            System.Runtime.InteropServices.Marshal.FinalReleaseComObject(ws);
+            System.Runtime.InteropServices.Marshal.FinalReleaseComObject(wb);
+            System.Runtime.InteropServices.Marshal.FinalReleaseComObject(excel);
+            ws = null;
+            wb = null;
+            excel = null;
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+        }
 
         public object ReadCell(int i,int j)
         {

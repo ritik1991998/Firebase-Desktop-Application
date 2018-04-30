@@ -221,12 +221,12 @@ namespace Firebase_Desktop_Application
             }
 
         }
-
+        Excel excel;
         private void openExcelFile(string path, int sheetNo)
         {
             try
             {
-                Excel excel = new Excel(path, 1);
+                excel = new Excel(path, 1);
                 for (int i = 1; i < 4; i++)
                 {
                     pushToDatabase(excel.ReadCell(i, 2) + "", excel.ReadCell(i, 3) + "");
@@ -299,33 +299,38 @@ namespace Firebase_Desktop_Application
 
         private void fileNameListBox_DoubleClick(object sender, EventArgs e)
         {
+            if (excel != null)
+            {
+                excel.Dump();
+            }
             openExcelFile(fileNameListBox.SelectedItem.ToString(), 1);
 
         }
 
         private void openExcelDataView(string path)
         {
-
             //solve error by downloading:   https://www.microsoft.com/en-us/download/confirmation.aspx?id=13255
             //try
             //{
-                String name = "Sheet1";
-                String constr = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" +
-                                path +
-                                ";Extended Properties='Excel 12.0 XML;HDR=YES;';";
+            String name = "Sheet1";
+            String constr = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" +
+                            path +
+                            ";Extended Properties='Excel 12.0 XML;HDR=YES;';";
 
-                OleDbConnection con = new OleDbConnection(constr);
-                OleDbCommand oconn = new OleDbCommand("Select * From [" + name + "$]", con);
-                con.Open();
+            OleDbConnection con = new OleDbConnection(constr);
+            OleDbCommand oconn = new OleDbCommand("Select * From [" + name + "$]", con);
+            //con.Open();
 
-                OleDbDataAdapter sda = new OleDbDataAdapter(oconn);
-                DataTable data = new DataTable();
-                sda.Fill(data);
-                dataGridView1.DataSource = data;
+            OleDbDataAdapter sda = new OleDbDataAdapter(oconn);
+            DataTable data = new DataTable();
+            sda.Fill(data);
+            dataGridView1.DataSource = data;
+
+            //con.Close();
             //}
             //catch (Exception)
             //{
-               // MessageBox.Show("Something's wrong");
+            // MessageBox.Show("Something's wrong");
             //}
         }
 
@@ -426,6 +431,20 @@ namespace Firebase_Desktop_Application
         {
             MessageBox.Show("closing");
             WritetoRegistry("Name", "hindi", "narendra modi");
+
+        }
+
+        private void fileNameListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void test_Click(object sender, EventArgs e)
+        {
+            //con.Close();
+            //oconn.Dispose;
+
+            excel.Dump();
 
         }
     }
