@@ -58,6 +58,7 @@
             this.photoUrlDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.posterIdDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.chatMessageBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.uploadToFirebase = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chatMessageBindingSource)).BeginInit();
@@ -329,11 +330,22 @@
             this.chatMessageBindingSource.DataSource = typeof(Firebase_Desktop_Application.ChatMessage);
             this.chatMessageBindingSource.CurrentChanged += new System.EventHandler(this.chatMessageBindingSource_CurrentChanged);
             // 
+            // uploadToFirebase
+            // 
+            this.uploadToFirebase.Location = new System.Drawing.Point(739, 419);
+            this.uploadToFirebase.Name = "uploadToFirebase";
+            this.uploadToFirebase.Size = new System.Drawing.Size(171, 23);
+            this.uploadToFirebase.TabIndex = 23;
+            this.uploadToFirebase.Text = "Upload to firebase";
+            this.uploadToFirebase.UseVisualStyleBackColor = true;
+            this.uploadToFirebase.Click += new System.EventHandler(this.uploadToFirebase_Click);
+            // 
             // FirebaseUi
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(911, 578);
+            this.Controls.Add(this.uploadToFirebase);
             this.Controls.Add(this.getImage);
             this.Controls.Add(this.saveImage);
             this.Controls.Add(this.loadImage);
@@ -398,6 +410,7 @@
         private System.Windows.Forms.Button loadImage;
         private System.Windows.Forms.Button saveImage;
         private System.Windows.Forms.Button getImage;
+        private System.Windows.Forms.Button uploadToFirebase;
     }
 }
 

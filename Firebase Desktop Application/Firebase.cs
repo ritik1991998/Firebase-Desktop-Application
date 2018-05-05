@@ -17,6 +17,7 @@ using System.Reactive.Linq;
 using System.Data.OleDb;
 using System.Net;
 using System.Drawing.Imaging;
+using Firebase.Storage;
 
 namespace Firebase_Desktop_Application
 {
@@ -67,7 +68,7 @@ namespace Firebase_Desktop_Application
         {
             //working push gives child as chatmessage object
 
-            pushToDatabase("ritik", "ok");
+            pushToDatabase("ritik", "ok",null);
         }
 
         private async void update_Click(object sender, EventArgs e)
@@ -177,7 +178,14 @@ namespace Firebase_Desktop_Application
         {
             if (nameBox.Text.Length > 0 && messageBox.Text.Length > 0)
             {
-                pushToDatabase(nameBox.Text, messageBox.Text);
+                if (pictureBox1 == null || pictureBox1.Image == null)
+                {
+                    pushToDatabase(nameBox.Text, messageBox.Text, null);
+                }
+                else
+                {
+                    UploadtoFirebaseStorage(nameBox.Text, messageBox.Text);
+                }
             }
             else
             {
@@ -186,7 +194,7 @@ namespace Firebase_Desktop_Application
             }
         }
 
-        private async void pushToDatabase(String name, string text)
+        private async void pushToDatabase(String name, string text,string url)
         {
             ArrayList liker = new ArrayList();
             liker.Add("12345");
@@ -194,18 +202,25 @@ namespace Firebase_Desktop_Application
             UnLiker.Add("1234");
             ArrayList favourite = new ArrayList();
             favourite.Add("1234");
-            var dino = await firebase
+            try
+            {
+                var dino = await firebase
               .Child("test")
               .PostAsync(new ChatMessage(
                             text,
                             GetDate(),
-                            null,
+                            url,
                             name,
                             UnLiker,
                             liker, favourite));
 
-            //  MessageBox.Show(asd);
-            outcomePush.Text = dino.Key;
+                //  MessageBox.Show(asd);
+                outcomePush.Text = dino.Key;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("error occured!");
+            }
         }
 
         private void ExcelLocation_Click(object sender, EventArgs e)
@@ -213,15 +228,15 @@ namespace Firebase_Desktop_Application
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Title = "Select a Excel File";
             ofd.Filter = "Excel files (*.xlsx)|*.xlsx|All files (*.*)|*.*";
-            //ofd.FileName = "*.xlsx";
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 fileName.Add(ofd.FileName);
+                //MessageBox.Show(ofd.FileName);
                 fileNameBinding.DataSource = fileName;
 
                 fileNameBinding.ResetBindings(false);
 
-                //openExcelFile(ofd.FileName, 1);
+                openExcelFile(ofd.FileName, 1);
             }
 
         }
@@ -233,7 +248,7 @@ namespace Firebase_Desktop_Application
                 excel = new Excel(path, 1);
                 for (int i = 1; i < 4; i++)
                 {
-                    pushToDatabase(excel.ReadCell(i, 2) + "", excel.ReadCell(i, 3) + "");
+                    pushToDatabase(excel.ReadCell(i, 2) + "", excel.ReadCell(i, 3) + "",null);
                 }
 
                 outcomePush.Text = excel.ReadCell(0, 0) + "";
@@ -452,22 +467,34 @@ namespace Firebase_Desktop_Application
 
         }
 
-        private void loadImage_Click(object sender, EventArgs e)
+        private void loadImageInPictureboxWithUrl(string url)
         {
-            WebRequest request = WebRequest.Create("https://i0.wp.com/youmeandtrends.com/wp-content/uploads/2016/05/nayanthara-beautiful-actress-images-Pretty-Indian-Girl-Photos.jpg");
-            using (var response = request.GetResponse())
+            WebRequest request = WebRequest.Create(url);
+            try
+            {
+                using (var response = request.GetResponse())
             {
                 using (var str = response.GetResponseStream())
                 {
-                    pictureBox1.Image = Bitmap.FromStream(str);
+                    
+                        pictureBox1.Image = Bitmap.FromStream(str);
 
-                    var imageSize = pictureBox1.Image.Size;
-                    var fitSize = pictureBox1.ClientSize;
-                    pictureBox1.SizeMode = imageSize.Width > fitSize.Width || imageSize.Height > fitSize.Height ?
-                    PictureBoxSizeMode.Zoom : PictureBoxSizeMode.CenterImage;
-
+                        var imageSize = pictureBox1.Image.Size;
+                        var fitSize = pictureBox1.ClientSize;
+                        pictureBox1.SizeMode = imageSize.Width > fitSize.Width || imageSize.Height > fitSize.Height ?
+                        PictureBoxSizeMode.Zoom : PictureBoxSizeMode.CenterImage;
+                    }
+                    
                 }
             }
+            catch (Exception)
+            {
+                MessageBox.Show("error occured!");
+            }
+        }
+        private void loadImage_Click(object sender, EventArgs e)
+        {
+            loadImageInPictureboxWithUrl("https://i0.wp.com/youmeandtrends.com/wp-content/uploads/2016/05/nayanthara-beautiful-actress-images-Pretty-Indian-Girl-Photos.jpg");
         }
 
         private void saveImage_Click(object sender, EventArgs e)
@@ -533,6 +560,51 @@ namespace Firebase_Desktop_Application
             else
             {
                 opFile.Dispose();
+            }
+        }
+
+        private async void uploadToFirebase_Click(object sender, EventArgs e)
+        {
+            UploadtoFirebaseStorage("Admin","upload");
+        }
+
+        private async void UploadtoFirebaseStorage(string name,string text)
+        {
+            if (pictureBox1 == null || pictureBox1.Image == null)
+            {
+                MessageBox.Show("No picture found");
+                //return null;
+            }
+            else
+            {
+                //var stream = File.Open(@"C:\Users\ritik\Desktop\h.jpg", FileMode.Open);
+
+                var ms = new MemoryStream();
+                pictureBox1.Image.Save(ms, ImageFormat.Png);
+                ms.Position = 0;
+                // Constructr FirebaseStorage, path to where you want to upload the file and Put it there
+                var task = new FirebaseStorage(Secrets.StoragePath)
+                    .Child("test")
+                    .Child(GetDate())
+                    .PutAsync(ms);
+
+                // Track progress of the upload
+                //task.Progress.ProgressChanged += (s, ef) => MessageBox.Show($"Progress: {ef.Percentage} %");
+
+                // await the task to wait until upload completes and get the download url
+                try
+                {
+                    var downloadUrl = await task;
+
+                    MessageBox.Show(downloadUrl);
+                    loadImageInPictureboxWithUrl(downloadUrl);
+                    pushToDatabase(name,text, downloadUrl);
+                    //return downloadUrl;
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("error occured! Possibly network problem");
+                }
             }
         }
     }
