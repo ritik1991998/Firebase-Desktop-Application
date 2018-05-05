@@ -119,7 +119,7 @@ namespace Firebase_Desktop_Application
               */
             delegateUpdateUiBox DelegateUpdateUiBox = new delegateUpdateUiBox(UpdateUiTextBox);
             observable = firebase
-              .Child("test")
+              .Child("input")
               .AsObservable<ChatMessage>()
               .Where(f => !string.IsNullOrEmpty(f.Key))
               .Subscribe(f =>
@@ -469,9 +469,9 @@ namespace Firebase_Desktop_Application
 
         private void loadImageInPictureboxWithUrl(string url)
         {
-            WebRequest request = WebRequest.Create(url);
             try
             {
+                WebRequest request = WebRequest.Create(url);
                 using (var response = request.GetResponse())
             {
                 using (var str = response.GetResponseStream())
@@ -492,11 +492,7 @@ namespace Firebase_Desktop_Application
                 MessageBox.Show("error occured!");
             }
         }
-        private void loadImage_Click(object sender, EventArgs e)
-        {
-            loadImageInPictureboxWithUrl("https://i0.wp.com/youmeandtrends.com/wp-content/uploads/2016/05/nayanthara-beautiful-actress-images-Pretty-Indian-Girl-Photos.jpg");
-        }
-
+       
         private void saveImage_Click(object sender, EventArgs e)
         {
             SaveFileDialog sfd = new SaveFileDialog();
@@ -591,9 +587,9 @@ namespace Firebase_Desktop_Application
                 // Track progress of the upload
                 //task.Progress.ProgressChanged += (s, ef) => MessageBox.Show($"Progress: {ef.Percentage} %");
 
-                // await the task to wait until upload completes and get the download url
                 try
                 {
+                    // await the task to wait until upload completes and get the download url
                     var downloadUrl = await task;
 
                     MessageBox.Show(downloadUrl);
@@ -605,6 +601,18 @@ namespace Firebase_Desktop_Application
                 {
                     MessageBox.Show("error occured! Possibly network problem");
                 }
+            }
+        }
+
+        private void dataGridView1_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            DataGridViewTextBoxCell cell = (DataGridViewTextBoxCell)
+                dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex];
+
+            if (dataGridView1.Columns[cell.ColumnIndex].HeaderText == "photoUrl")
+            {
+                loadImageInPictureboxWithUrl(cell.Value+"");
+
             }
         }
     }

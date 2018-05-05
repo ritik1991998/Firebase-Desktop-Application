@@ -50,15 +50,14 @@
             this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.test = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.loadImage = new System.Windows.Forms.Button();
             this.saveImage = new System.Windows.Forms.Button();
             this.getImage = new System.Windows.Forms.Button();
+            this.uploadToFirebase = new System.Windows.Forms.Button();
             this.textDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.timeCurrentDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.photoUrlDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.posterIdDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.chatMessageBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.uploadToFirebase = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chatMessageBindingSource)).BeginInit();
@@ -167,6 +166,7 @@
             this.dataGridView1.RowTemplate.Height = 24;
             this.dataGridView1.Size = new System.Drawing.Size(683, 130);
             this.dataGridView1.TabIndex = 9;
+            this.dataGridView1.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseDoubleClick);
             // 
             // ExcelLocation
             // 
@@ -221,9 +221,9 @@
             // 
             // printToExcel
             // 
-            this.printToExcel.Location = new System.Drawing.Point(805, 283);
+            this.printToExcel.Location = new System.Drawing.Point(794, 283);
             this.printToExcel.Name = "printToExcel";
-            this.printToExcel.Size = new System.Drawing.Size(108, 23);
+            this.printToExcel.Size = new System.Drawing.Size(119, 23);
             this.printToExcel.TabIndex = 15;
             this.printToExcel.Text = "print to excel";
             this.printToExcel.UseVisualStyleBackColor = true;
@@ -271,21 +271,11 @@
             this.pictureBox1.TabIndex = 19;
             this.pictureBox1.TabStop = false;
             // 
-            // loadImage
-            // 
-            this.loadImage.Location = new System.Drawing.Point(742, 392);
-            this.loadImage.Name = "loadImage";
-            this.loadImage.Size = new System.Drawing.Size(171, 23);
-            this.loadImage.TabIndex = 20;
-            this.loadImage.Text = "Load Image from Url";
-            this.loadImage.UseVisualStyleBackColor = true;
-            this.loadImage.Click += new System.EventHandler(this.loadImage_Click);
-            // 
             // saveImage
             // 
-            this.saveImage.Location = new System.Drawing.Point(742, 448);
+            this.saveImage.Location = new System.Drawing.Point(732, 448);
             this.saveImage.Name = "saveImage";
-            this.saveImage.Size = new System.Drawing.Size(168, 44);
+            this.saveImage.Size = new System.Drawing.Size(178, 44);
             this.saveImage.TabIndex = 21;
             this.saveImage.Text = "Save Image";
             this.saveImage.UseVisualStyleBackColor = true;
@@ -297,9 +287,19 @@
             this.getImage.Name = "getImage";
             this.getImage.Size = new System.Drawing.Size(181, 33);
             this.getImage.TabIndex = 22;
-            this.getImage.Text = "Get Image from Desktop";
+            this.getImage.Text = "Get Image from Files";
             this.getImage.UseVisualStyleBackColor = true;
             this.getImage.Click += new System.EventHandler(this.getImage_Click);
+            // 
+            // uploadToFirebase
+            // 
+            this.uploadToFirebase.Location = new System.Drawing.Point(732, 419);
+            this.uploadToFirebase.Name = "uploadToFirebase";
+            this.uploadToFirebase.Size = new System.Drawing.Size(178, 23);
+            this.uploadToFirebase.TabIndex = 23;
+            this.uploadToFirebase.Text = "Upload to firebase";
+            this.uploadToFirebase.UseVisualStyleBackColor = true;
+            this.uploadToFirebase.Click += new System.EventHandler(this.uploadToFirebase_Click);
             // 
             // textDataGridViewTextBoxColumn
             // 
@@ -330,16 +330,6 @@
             this.chatMessageBindingSource.DataSource = typeof(Firebase_Desktop_Application.ChatMessage);
             this.chatMessageBindingSource.CurrentChanged += new System.EventHandler(this.chatMessageBindingSource_CurrentChanged);
             // 
-            // uploadToFirebase
-            // 
-            this.uploadToFirebase.Location = new System.Drawing.Point(739, 419);
-            this.uploadToFirebase.Name = "uploadToFirebase";
-            this.uploadToFirebase.Size = new System.Drawing.Size(171, 23);
-            this.uploadToFirebase.TabIndex = 23;
-            this.uploadToFirebase.Text = "Upload to firebase";
-            this.uploadToFirebase.UseVisualStyleBackColor = true;
-            this.uploadToFirebase.Click += new System.EventHandler(this.uploadToFirebase_Click);
-            // 
             // FirebaseUi
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -348,7 +338,6 @@
             this.Controls.Add(this.uploadToFirebase);
             this.Controls.Add(this.getImage);
             this.Controls.Add(this.saveImage);
-            this.Controls.Add(this.loadImage);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.test);
             this.Controls.Add(this.ProcessingLabel);
@@ -407,7 +396,6 @@
         private System.Windows.Forms.BindingSource chatMessageBindingSource;
         private System.Windows.Forms.Button test;
         private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.Button loadImage;
         private System.Windows.Forms.Button saveImage;
         private System.Windows.Forms.Button getImage;
         private System.Windows.Forms.Button uploadToFirebase;
