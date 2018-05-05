@@ -15,6 +15,8 @@ using System.Collections.ObjectModel;
 using Microsoft.Win32;
 using System.Reactive.Linq;
 using System.Data.OleDb;
+using System.Net;
+using System.Drawing.Imaging;
 
 namespace Firebase_Desktop_Application
 {
@@ -209,7 +211,9 @@ namespace Firebase_Desktop_Application
         private void ExcelLocation_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.FileName = "*.xlsx";
+            ofd.Title = "Select a Excel File";
+            ofd.Filter = "Excel files (*.xlsx)|*.xlsx|All files (*.*)|*.*";
+            //ofd.FileName = "*.xlsx";
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 fileName.Add(ofd.FileName);
@@ -446,6 +450,90 @@ namespace Firebase_Desktop_Application
 
             excel.Dump();
 
+        }
+
+        private void loadImage_Click(object sender, EventArgs e)
+        {
+            WebRequest request = WebRequest.Create("https://i0.wp.com/youmeandtrends.com/wp-content/uploads/2016/05/nayanthara-beautiful-actress-images-Pretty-Indian-Girl-Photos.jpg");
+            using (var response = request.GetResponse())
+            {
+                using (var str = response.GetResponseStream())
+                {
+                    pictureBox1.Image = Bitmap.FromStream(str);
+
+                    var imageSize = pictureBox1.Image.Size;
+                    var fitSize = pictureBox1.ClientSize;
+                    pictureBox1.SizeMode = imageSize.Width > fitSize.Width || imageSize.Height > fitSize.Height ?
+                    PictureBoxSizeMode.Zoom : PictureBoxSizeMode.CenterImage;
+
+                }
+            }
+        }
+
+        private void saveImage_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "Images|*.png;*.bmp;*.jpg";
+            ImageFormat format = ImageFormat.Png;
+            if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string ext = System.IO.Path.GetExtension(sfd.FileName);
+                try {
+                    switch (ext)
+                    {
+                        case ".jpg":
+                            format = ImageFormat.Jpeg;
+                            break;
+                        case ".bmp":
+                            format = ImageFormat.Bmp;
+                            break;
+                    }
+                    pictureBox1.Image.Save(sfd.FileName, format);
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("error occured");
+                }
+
+            }
+        }
+
+        private void getImage_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog opFile = new OpenFileDialog();
+            opFile.Title = "Select a Image";
+            opFile.Filter = "Images|*.png;*.bmp;*.jpg|jpg files (*.jpg)|*.jpg|png files (*.png)|*.png|bmp files (*.bmp)|*.bmp|All files (*.*)|*.*";
+
+            //string appPath = Path.GetDirectoryName(Application.ExecutablePath) + @"\ProImages\"; // <---
+            //if (Directory.Exists(appPath) == false)                                              // <---
+            //{                                                                                    // <---
+            //    Directory.CreateDirectory(appPath);                                              // <---
+            //}                                                                                    // <---
+
+            if (opFile.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    string iName = opFile.SafeFileName;   // <---
+                    string filepath = opFile.FileName;    // <---
+                    //File.Copy(filepath, appPath + iName); // <---
+                    pictureBox1.Image = new Bitmap(opFile.OpenFile());
+
+                    var imageSize = pictureBox1.Image.Size;
+                    var fitSize = pictureBox1.ClientSize;
+                    pictureBox1.SizeMode = imageSize.Width > fitSize.Width || imageSize.Height > fitSize.Height ?
+                    PictureBoxSizeMode.Zoom : PictureBoxSizeMode.CenterImage;
+
+                }
+                catch (Exception exp)
+                {
+                    MessageBox.Show("Unable to open file " + exp.Message);
+                }
+            }
+            else
+            {
+                opFile.Dispose();
+            }
         }
     }
 }

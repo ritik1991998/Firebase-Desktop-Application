@@ -49,12 +49,17 @@
             this.ProcessingLabel = new System.Windows.Forms.Label();
             this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.test = new System.Windows.Forms.Button();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.loadImage = new System.Windows.Forms.Button();
+            this.saveImage = new System.Windows.Forms.Button();
+            this.getImage = new System.Windows.Forms.Button();
             this.textDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.timeCurrentDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.photoUrlDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.posterIdDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.chatMessageBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chatMessageBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -159,7 +164,7 @@
             this.dataGridView1.Location = new System.Drawing.Point(30, 225);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(683, 213);
+            this.dataGridView1.Size = new System.Drawing.Size(683, 130);
             this.dataGridView1.TabIndex = 9;
             // 
             // ExcelLocation
@@ -205,7 +210,7 @@
             // 
             // printAsExcel
             // 
-            this.printAsExcel.Location = new System.Drawing.Point(794, 415);
+            this.printAsExcel.Location = new System.Drawing.Point(794, 312);
             this.printAsExcel.Name = "printAsExcel";
             this.printAsExcel.Size = new System.Drawing.Size(119, 23);
             this.printAsExcel.TabIndex = 14;
@@ -215,7 +220,7 @@
             // 
             // printToExcel
             // 
-            this.printToExcel.Location = new System.Drawing.Point(805, 361);
+            this.printToExcel.Location = new System.Drawing.Point(805, 283);
             this.printToExcel.Name = "printToExcel";
             this.printToExcel.Size = new System.Drawing.Size(108, 23);
             this.printToExcel.TabIndex = 15;
@@ -225,15 +230,15 @@
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(30, 445);
+            this.progressBar1.Location = new System.Drawing.Point(30, 361);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(758, 23);
+            this.progressBar1.Size = new System.Drawing.Size(758, 17);
             this.progressBar1.TabIndex = 16;
             // 
             // ProcessingLabel
             // 
             this.ProcessingLabel.AutoSize = true;
-            this.ProcessingLabel.Location = new System.Drawing.Point(805, 453);
+            this.ProcessingLabel.Location = new System.Drawing.Point(809, 338);
             this.ProcessingLabel.Name = "ProcessingLabel";
             this.ProcessingLabel.Size = new System.Drawing.Size(90, 17);
             this.ProcessingLabel.TabIndex = 17;
@@ -256,6 +261,44 @@
             this.test.Text = "test";
             this.test.UseVisualStyleBackColor = true;
             this.test.Click += new System.EventHandler(this.test_Click);
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Location = new System.Drawing.Point(30, 384);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(474, 182);
+            this.pictureBox1.TabIndex = 19;
+            this.pictureBox1.TabStop = false;
+            // 
+            // loadImage
+            // 
+            this.loadImage.Location = new System.Drawing.Point(742, 392);
+            this.loadImage.Name = "loadImage";
+            this.loadImage.Size = new System.Drawing.Size(171, 23);
+            this.loadImage.TabIndex = 20;
+            this.loadImage.Text = "Load Image from Url";
+            this.loadImage.UseVisualStyleBackColor = true;
+            this.loadImage.Click += new System.EventHandler(this.loadImage_Click);
+            // 
+            // saveImage
+            // 
+            this.saveImage.Location = new System.Drawing.Point(742, 448);
+            this.saveImage.Name = "saveImage";
+            this.saveImage.Size = new System.Drawing.Size(168, 44);
+            this.saveImage.TabIndex = 21;
+            this.saveImage.Text = "Save Image";
+            this.saveImage.UseVisualStyleBackColor = true;
+            this.saveImage.Click += new System.EventHandler(this.saveImage_Click);
+            // 
+            // getImage
+            // 
+            this.getImage.Location = new System.Drawing.Point(732, 498);
+            this.getImage.Name = "getImage";
+            this.getImage.Size = new System.Drawing.Size(181, 33);
+            this.getImage.TabIndex = 22;
+            this.getImage.Text = "Get Image from Desktop";
+            this.getImage.UseVisualStyleBackColor = true;
+            this.getImage.Click += new System.EventHandler(this.getImage_Click);
             // 
             // textDataGridViewTextBoxColumn
             // 
@@ -290,7 +333,11 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(911, 482);
+            this.ClientSize = new System.Drawing.Size(911, 578);
+            this.Controls.Add(this.getImage);
+            this.Controls.Add(this.saveImage);
+            this.Controls.Add(this.loadImage);
+            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.test);
             this.Controls.Add(this.ProcessingLabel);
             this.Controls.Add(this.progressBar1);
@@ -313,6 +360,7 @@
             this.Name = "FirebaseUi";
             this.Text = "Firebase Ui";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chatMessageBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -346,6 +394,10 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn posterIdDataGridViewTextBoxColumn;
         private System.Windows.Forms.BindingSource chatMessageBindingSource;
         private System.Windows.Forms.Button test;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Button loadImage;
+        private System.Windows.Forms.Button saveImage;
+        private System.Windows.Forms.Button getImage;
     }
 }
 
